@@ -5,7 +5,9 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { productRouter } from "./adminRouter/productRouter";
+import { variantRouter } from "./adminRouter/variantRouter";
 
 export const adminRouter = createTRPCRouter({
-  product: productRouter
+  product: productRouter,
+  variant: variantRouter,
 });
