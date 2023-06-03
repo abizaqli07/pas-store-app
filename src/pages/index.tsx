@@ -1,12 +1,41 @@
+import { Product, Variant } from "@prisma/client";
 import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import UserLayout from "~/components/user/UserLayout";
 import { api } from "~/utils/api";
 
+interface ProductViewProps {
+  products: Product[];
+  isLoading: boolean;
+  isError: boolean
+}
+
+const ProductView = ({ products, isLoading, isError }: ProductViewProps) => {
+
+  const router = useRouter();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error...</div>
+
+  return (
+    <div className=" flex flex-wrap w-full gap-8">
+
+      {products.map((product) => (
+        <div key={product.id} className=" p-6 bg-gray-300 flex flex-col gap-4 cursor-pointer hover:bg-gray-400 transition-colors duration-200" onClick={() => router.push(`/products/${product.id}`)}>
+            <div>{product.name}</div>
+            <div>{product.small_description}</div>
+        </div>
+      ))}
+
+    </div>
+  )
+}
+
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const { data, isLoading, isError } = api.user.product.getAllProduct.useQuery()
 
   return (
     <>
@@ -17,8 +46,10 @@ const Home: NextPage = () => {
       </Head>
       <UserLayout>
         <div className=" w-full min-h-screen bg-gray-500">Sliders</div>
-        <div className=" min-h-screen container bg-gray-200 mx-auto">
-          hello
+        <div className=" min-h-screen container bg-gray-200 mx-auto p-8">
+          {data != undefined && (
+            <ProductView products={data.data} isLoading={isLoading} isError={isError} />
+          )}
         </div>
       </UserLayout>
     </>
