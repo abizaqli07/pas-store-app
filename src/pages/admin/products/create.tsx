@@ -5,9 +5,7 @@ import { api } from '~/utils/api'
 import { callbackData } from '~/utils/types'
 import { useRouter } from 'next/router'
 
-type Props = {}
-
-const CreateProduct = (props: Props) => {
+const CreateProduct = () => {
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
   const router = useRouter();
 

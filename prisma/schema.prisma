@@ -67,11 +67,30 @@ model VerificationToken {
 }
 
 model Product {
-    id                String   @id @default(cuid())
+    id                String    @id @default(cuid())
     name              String
     small_description String
     description       String
     is_active         Boolean
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    Variant           Variant[]
+}
+
+model Variant {
+    id            String   @id @default(cuid())
+    productId     String
+    name          String
+    active_period Int
+    type          TYPE
+    price         BigInt
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum TYPE {
+    SHARED
+    DEDICATED
 }

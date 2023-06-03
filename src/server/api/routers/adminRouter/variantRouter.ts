@@ -1,3 +1,4 @@
+import { TYPE } from "@prisma/client";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -6,24 +7,27 @@ import {
 } from "~/server/api/trpc";
 
 export const variantRouter = createTRPCRouter({
-  // getProduct: protectedProcedure
-  //   .input(z.object({
-  //     id: z.string().cuid()
-  //   }))
-  //   .query(async ({ ctx, input }) => {
-  //     const data = await ctx.prisma.product.findFirst({
-  //       where: {
-  //         id: input.id
-  //       }
-  //     })
+  getVariant: protectedProcedure
+    .input(z.object({
+      id: z.string().cuid()
+    }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.prisma.variant.findFirst({
+        where: {
+          id: input.id
+        }
+      })
 
-  //     return {
-  //       data
-  //     }
-  //   }),
-  getAllProduct: protectedProcedure
+      return {
+        data
+      }
+    }),
+  getAllVariant: protectedProcedure
     .query(async ({ ctx }) => {
       const data = await ctx.prisma.product.findMany({
+        include: {
+          Variant: true
+        },
         orderBy: {
           createdAt: "desc"
         }
@@ -33,95 +37,97 @@ export const variantRouter = createTRPCRouter({
         data
       }
     }),
-  createProduct: protectedProcedure
+  createVariant: protectedProcedure
     .input(z.object({
+      productId: z.string().cuid(),
       name: z.string(),
-      small_description: z.string(),
-      description: z.string(),
-      is_active: z.boolean(),
+      active_period: z.number(),
+      type: z.nativeEnum(TYPE),
+      price: z.any()
     }))
     .mutation(async ({ ctx, input }) => {
       try {
-        const insert = await ctx.prisma.product.create({
+        const insert = await ctx.prisma.variant.create({
           data: {
+            productId: input.productId,
             name: input.name,
-            small_description: input.small_description,
-            description: input.description,
-            is_active: input.is_active
+            active_period: input.active_period,
+            type: input.type,
+            price: BigInt(input.price)
           }
         })
       } catch (error) {
         return {
           success: false,
-          message: "Failed creating product, some error occured",
+          message: "Failed creating variant, some error occured",
           error: error,
         }
       }
 
       return {
         success: true,
-        message: "Product successfully created",
+        message: "Variant successfully created",
         error: null,
       }
     }),
-  // updateProduct: protectedProcedure
-  //   .input(z.object({
-  //     id: z.string().cuid(),
-  //     name: z.string(),
-  //     small_description: z.string(),
-  //     description: z.string(),
-  //     is_active: z.boolean(),
-  //   }))
-  //   .mutation(async ({ input, ctx }) => {
-  //     try {
-  //       const edit = await ctx.prisma.product.update({
-  //         where: {
-  //           id: input.id
-  //         },
-  //         data: {
-  //           name: input.name,
-  //           small_description: input.small_description,
-  //           description: input.description,
-  //           is_active: input.is_active
-  //         }
-  //       })
-  //     } catch (e) {
-  //       return {
-  //         success: false,
-  //         message: "Failed updating product, Some error occured",
-  //         error: e
-  //       }
-  //     }
+  updateVariant: protectedProcedure
+    .input(z.object({
+      id: z.string().cuid(),
+      name: z.string(),
+      active_period: z.number(),
+      type: z.nativeEnum(TYPE),
+      price: z.any()
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const edit = await ctx.prisma.variant.update({
+          where: {
+            id: input.id
+          },
+          data: {
+            name: input.name,
+            active_period: input.active_period,
+            price: BigInt(input.price),
+            type: input.type
+          }
+        })
+      } catch (e) {
+        return {
+          success: false,
+          message: "Failed updating product, Some error occured",
+          error: e
+        }
+      }
 
-  //     return {
-  //       success: true,
-  //       message: "Product succesfully updated",
-  //       error: null
-  //     }
-  //   }),
-  // deleteProduct: protectedProcedure
-  //   .input(z.object({
-  //     id: z.string().cuid()
-  //   }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     try {
-  //       const del = await ctx.prisma.product.delete({
-  //         where: {
-  //           id: input.id
-  //         }
-  //       })
-  //     } catch (e) {
-  //       return {
-  //         success: false,
-  //         message: "Failed deleting product, Some error occured",
-  //         error: e
-  //       }
-  //     }
+      return {
+        success: true,
+        message: "Product succesfully updated",
+        error: null
+      }
+    }),
+  deleteVariant: protectedProcedure
+    .input(z.object({
+      id: z.string().cuid()
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const del = await ctx.prisma.variant.delete({
+          where: {
+            id: input.id
+          }
+        })
+      } catch (e) {
+        return {
+          success: false,
+          message: "Failed deleting product, Some error occured",
+          error: e
+        }
+      }
 
-  //     return {
-  //       success: true,
-  //       message: "Product succesfully deleted",
-  //       error: null
-  //     }
-  //   })
+      return {
+        success: true,
+        message: "Product succesfully deleted",
+        error: null
+      }
+    })
 });
