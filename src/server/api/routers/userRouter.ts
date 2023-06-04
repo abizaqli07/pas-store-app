@@ -5,7 +5,9 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { productRouter } from "./userRouter/productRouter";
+import { transactionRouter } from "./userRouter/transactionRouter";
 
 export const userRouter = createTRPCRouter({
-  product: productRouter
+  product: productRouter,
+  transaction: transactionRouter,
 });

@@ -1,4 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 import { ReactNode } from "react"
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
 
 const UserLayout = ({ children }: Props) => {
   const session = useSession();
-  
+  const router = useRouter();
 
   return (
     <div className=" w-full h-fit">
@@ -19,7 +20,7 @@ const UserLayout = ({ children }: Props) => {
               <button onClick={() => void signIn()}>Login</button>
             ) : (
               <div className=" flex gap-2">
-                <div className=" bg-blue-500">Trans</div>
+                <div className=" bg-blue-500 cursor-pointer" onClick={() => router.push('/products/transactions')}>Transactions</div>
                 <div><button className=" bg-lime-500" onClick={() => void signOut()}>Log Out</button></div>
                 <div className=" px-4 py-2 bg-red-500"></div>
               </div>

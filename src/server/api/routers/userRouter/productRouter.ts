@@ -6,7 +6,7 @@ import {
 } from "~/server/api/trpc";
 
 export const productRouter = createTRPCRouter({
-  getAllProduct: protectedProcedure
+  getAllProduct: publicProcedure
     .query(async ({ ctx, input }) => {
       const data = await ctx.prisma.product.findMany({
         where: {
@@ -18,7 +18,7 @@ export const productRouter = createTRPCRouter({
         data
       }
     }),
-  getProduct: protectedProcedure
+  getProduct: publicProcedure
     .input(z.object({
       id: z.string().cuid()
     }))

@@ -56,6 +56,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Order         Order[]
 }
 
 model VerificationToken {
@@ -75,6 +76,7 @@ model Product {
     createdAt         DateTime  @default(now())
     updatedAt         DateTime  @updatedAt
     Variant           Variant[]
+    Order             Order[]
 }
 
 model Variant {
@@ -88,9 +90,30 @@ model Variant {
     updatedAt     DateTime @updatedAt
 
     product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    Order   Order[]
+}
+
+model Order {
+    id        String   @id @default(cuid())
+    productId String
+    variantId String
+    userId    String
+    status    STATUS   @default(ORDERED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    variant Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 enum TYPE {
     SHARED
     DEDICATED
+}
+
+enum STATUS {
+    ORDERED
+    COMPLETED
+    EXPIRED
 }
