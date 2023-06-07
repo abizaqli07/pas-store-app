@@ -45,7 +45,8 @@ export const transactionRouter = createTRPCRouter({
       const data = await ctx.prisma.order.findMany({
         include: {
           product: true,
-          variant: true
+          variant: true,
+          premium: true,
         },
         where: {
           userId: userId,
@@ -70,9 +71,40 @@ export const transactionRouter = createTRPCRouter({
         include: {
           product: true,
           variant: true,
+          premium: true,
         }
       })
 
       return data
+    }),
+  uploadPayment: protectedProcedure
+    .input(z.object({
+      transactionId: z.string().cuid(),
+      image: z.string()
+    }))
+    .mutation(async ({ctx, input}) => {
+      try {
+        const order = await ctx.prisma.order.update({
+          where: {
+            id: input.transactionId
+          },
+          data: {
+            image: input.image
+          }
+        })
+
+      } catch (error) {
+        return {
+          success: false,
+          message: "Failed uploading proof of payment, some error occured",
+          error: error,
+        }
+      }
+
+      return {
+        success: true,
+        message: "Proof of payment successfully uploaded",
+        error: null,
+      }
     })
 });

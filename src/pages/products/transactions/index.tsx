@@ -1,4 +1,4 @@
-import { Order, Product, Variant } from '@prisma/client';
+import { Order, Premium, Product, Variant } from '@prisma/client';
 import { useRouter } from 'next/router';
 import React from 'react'
 import { api } from '~/utils/api'
@@ -7,6 +7,7 @@ interface transactionProps {
   transaction: (Order & {
     product: Product;
     variant: Variant;
+    premium: Premium | null;
   })[] | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -22,7 +23,7 @@ const UserTransactionView = ({ transaction, isLoading, isError }: transactionPro
 
   return (
     <div className=' flex flex-col gap-8'>
-      {transaction.filter((data) => { return data.status === "ORDERED" }).map((data) => (
+      {transaction.map((data) => (
         <div className=' flex flex-col gap-4 bg-gray-200'>
           <div>
             <div>{data.product.name}</div>
@@ -35,7 +36,17 @@ const UserTransactionView = ({ transaction, isLoading, isError }: transactionPro
           </div>
 
           <div>
-            <div>Packet ordered, plese complete the payment</div>
+            {data.image == null ? (
+              <div>Packet ordered, plese complete the payment</div>
+            ) : (
+              <div>
+                {data.premium == null ? (
+                  <div>Wait for admin send your account</div>
+                ) : (
+                  <div>Order completed</div>
+                )}
+              </div>
+            )}
             <div
               className=' bg-lime-500 cursor-pointer w-fit'
               onClick={() => router.push(`${router.pathname}/${data.id}`)}
