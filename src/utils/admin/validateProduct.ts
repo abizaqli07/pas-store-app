@@ -3,7 +3,7 @@ export interface productInterface {
   small_description: string
   description: string
   is_active: boolean
-  image: string
+  image: string | null
 }
 export interface productUpdateInterface {
   id: string

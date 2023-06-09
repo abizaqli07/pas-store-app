@@ -1,7 +1,9 @@
-import { useState } from 'react'
 import { Product, Variant } from "@prisma/client";
-import { NextRouter, useRouter } from "next/router"
-import AdminLayout from "~/components/admin/AdminLayout"
+import { NextRouter, useRouter } from "next/router";
+import { useState } from 'react';
+import AdminLayout from "~/components/admin/AdminLayout";
+import Callbacks from '~/components/common/Callbacks';
+import Modals from '~/components/common/Modals';
 import { api } from "~/utils/api";
 import { callbackData } from '~/utils/types';
 
@@ -23,44 +25,46 @@ const VariantView = ({ data, router }: { data: (Product & { Variant: Variant[] }
     deleteProduct.mutate({ id: confirm.id })
   }
 
+  const handleClose = () => {
+    setConfirm({ visible: false, id: "" })
+    setCallback({ visible: false, data: null })
+  }
+
   return (
     <>
       {callback.visible && (
-        <div className=' popup'>
-          <div>{callback.data?.message}</div>
-          <div>{callback.data?.error ? callback.data.error : ""}</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700 w-fit' onClick={() => router.reload()}>Close</div>
-          </div>
-        </div>
+        <Callbacks
+          close={handleClose}
+          data={callback}
+        />
       )}
 
       {confirm.visible && (
-        <div className=' popup'>
-          <div>Anda ingin menghapus?</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700' onClick={() => setConfirm({ visible: false, id: "" })}>Cancel</div>
-            <div className='button__danger' onClick={() => handleDelete()}>Confirm</div>
-          </div>
-        </div>
+        <Modals
+          action={handleDelete}
+          close={handleClose}
+        />
       )}
 
-      <div className=" flex flex-col gap-4">
+      <div className=" flex flex-col gap-6">
         {data.map((data) => (
-          <div key={data.id} className=' px-2 py-2 bg-gray-200 flex flex-col gap-4'>
+          <div
+            key={data.id}
+            className=' p-6 bg-white shadow-lg flex flex-col rounded-lg gap-4'
+          >
             <div>Product : {data.name}</div>
             <div>Description : {data.small_description}</div>
             <div>Variant :</div>
             <div className=' flex flex-col gap-4'>
               {data.Variant.map((variant) => (
-                <div key={variant.id} className=' p-2 flex flex-col gap-2 bg-gray-300'>
+                <div key={variant.id} className=' p-3 flex flex-col gap-2 bg-primaryLight rounded-lg shadow-md'>
                   <div>Name : {variant.name}</div>
                   <div>Price : {variant.price.toString()}</div>
                   <div>Type : {variant.type}</div>
                   <div>Active Period : {variant.active_period} Month</div>
                   <div className=" flex gap-4">
-                    <div className="  bg-lime-500 w-fit cursor-pointer" onClick={() => router.push(`${router.pathname}/${variant.id}`)}>View</div>
-                    <div className=" bg-red-500 w-fit cursor-pointer" onClick={() => handleConfirm(variant.id)}>Delete</div>
+                    <div className="  base__button  border-2 border-lime-500 hover:bg-lime-500 hover:text-white" onClick={() => router.push(`${router.pathname}/${variant.id}`)}>View</div>
+                    <div className=" base__button border-2 border-red-500 hover:bg-red-500 hover:text-white" onClick={() => handleConfirm(variant.id)}>Delete</div>
                   </div>
                 </div>
               ))}
@@ -93,9 +97,9 @@ const Variants = () => {
     <AdminLayout>
 
       <div className=' flex flex-col gap-8'>
-        <div className=' w-full bg-slate-500 flex flex-col gap-4 p-6 rounded-xl'>
-          <div>Input New Variant :</div>
-          <div className=' bg-lime-200 w-fit cursor-pointer' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
+        <div className=' w-full flex justify-between p-6 rounded-xl items-center'>
+          <div className=' text-3xl'>Variant List</div>
+          <div className=' base__button bg-primary hover:bg-primaryHover text-white' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
         </div>
 
         <VariantView data={data?.data} router={router} />

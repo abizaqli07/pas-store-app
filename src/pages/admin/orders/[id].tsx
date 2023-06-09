@@ -3,6 +3,9 @@ import { FormikProps, useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { BsCheckCircle, BsExclamationTriangle } from 'react-icons/bs';
+import AdminLayout from '~/components/admin/AdminLayout';
+import Callbacks from '~/components/common/Callbacks';
 import { api } from '~/utils/api';
 import { callbackData } from '~/utils/types';
 
@@ -40,6 +43,10 @@ const OrderDetailView = ({ transactionId, transaction, isLoading, isError }: tra
     insertData.mutate(values)
   }
 
+  const handleClose = () => {
+    setCallback({ visible: false, data: null })
+  }
+
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error...</div>
   if (transaction == undefined || transaction == null) return <div>No Transaction yet</div>
@@ -48,71 +55,82 @@ const OrderDetailView = ({ transactionId, transaction, isLoading, isError }: tra
   return (
     <div className=' flex flex-col gap-12'>
       {callback.visible && (
-        <div className='popup'>
-          <div>{callback.data?.message}</div>
-          <div>{callback.data?.error ? "Error Occured" : ""}</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700 w-fit' onClick={() => setCallback({ visible: false, data: null })}>Close</div>
-          </div>
-        </div>
+        <Callbacks
+          close={handleClose}
+          data={callback}
+        />
       )}
 
-      <div className=' flex flex-col gap-4 bg-gray-200'>
-        <div>
-          <div>{transaction.product.name}</div>
-          <div>{transaction.variant.name}</div>
+      <div className=' flex flex-col gap-8 shadow-xl p-6 rounded-lg'>
+
+        <div className=' p-4 border-2 border-dotted border-primary rounded-lg flex flex-col gap-6'>
+          <div className=' text-xl font-medium'>Orders Detail</div>
+          <div className=' flex flex-col gap-3'>
+            <div>Product Name : {transaction.product.name}</div>
+            <div>Product Variant : {transaction.variant.name}</div>
+            <div>Active Period : {transaction.variant.active_period} Month</div>
+            <div>Price : {transaction.variant.price.toString()}</div>
+            <div>Product Type : {transaction.variant.type == "SHARED" ? "Shared" : "Dedicated"}</div>
+          </div>
         </div>
 
-        <div>
-          <div>{transaction.variant.active_period} Month</div>
-          <div>{transaction.variant.price.toString()}</div>
-          <div>{transaction.variant.type == "SHARED" ? "Shared" : "Dedicated"}</div>
+        <div className=' flex flex-col gap-12 justify-center items-center text-center p-4 border-2 border-primary rounded-lg'>
+          <div className=' flex flex-col gap-4'>
+            <div className=' font-semibold'>Proof of Payment</div>
+            {transaction.image == null ? (
+              <div className=' bg-red-300 px-4 py-2 rounded-lg flex gap-2 items-center'><BsExclamationTriangle /> Please wait user sending proof of payment</div>
+            ) : (
+              <div className=' relative w-full aspect-[4/6]'>
+                <Image src={transaction.image} alt='proof of payment' fill />
+              </div>
+            )}
+          </div>
+
+          <div className=' flex flex-col gap-4'>
+            <div className=' font-semibold'>Send Account</div>
+
+            {transaction.premium == null ? (
+              <>
+                {transaction.image == null ? (
+                  <div className=' bg-red-300 px-4 py-2 rounded-lg flex gap-2 items-center'><BsExclamationTriangle /> This action cannot be done before user sending proof of payment</div>
+                ) : (
+                  <div className=' w-full'>
+                    <form onSubmit={formik.handleSubmit} className=' w-full flex flex-col gap-4'>
+                      <div className='flex flex-col input__wrapper'>
+                        <label>Username/Email</label>
+                        <input
+                          id='email'
+                          type="text"
+                          placeholder='name'
+                          className=' input__field '
+                          required {...formik.getFieldProps('email')}
+                        />
+                      </div>
+                      <div className='flex flex-col input__wrapper'>
+                        <label>Password</label>
+                        <input
+                          id='password'
+                          type="text"
+                          placeholder='small_description'
+                          className=' input__field '
+                          required {...formik.getFieldProps('password')}
+                        />
+                      </div>
+                      <div>
+                        <input className=' base__button bg-lime-500 hover:bg-lime-700 text-white' type="submit" value="Send" />
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className=' bg-lime-300 px-4 py-2 rounded-lg flex gap-2 items-center'><BsCheckCircle /> Account has been sended</div>
+            )}
+          </div>
         </div>
 
-        <div>
-          <div>Proof of payment</div>
-          {transaction.image == null ? (
-            <div>Please wait user sending proof of payment</div>
-          ) : (
-            <Image src={transaction.image} alt='proof of payment' width={100} height={100}/>
-          )}
-        </div>
-
-        <div className=' flex flex-col gap-4'>
-          <div>Send Account</div>
-
-          {transaction.premium == null ? (
-            <div>
-              <form onSubmit={formik.handleSubmit}>
-                <div className='flex flex-col'>
-                  <label>Username/Email</label>
-                  <input
-                    id='email'
-                    type="text"
-                    placeholder='name'
-                    required {...formik.getFieldProps('email')}
-                  />
-                </div>
-                <div className='flex flex-col'>
-                  <label>Password</label>
-                  <input
-                    id='password'
-                    type="text"
-                    placeholder='small_description'
-                    required {...formik.getFieldProps('password')}
-                  />
-                </div>
-                <div>
-                  <input className=' bg-lime-500 cursor-pointer' type="submit" value="Send" />
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div>Account has been sent</div>
-          )}
-        </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 
@@ -125,12 +143,16 @@ const OrderDetails = () => {
   })
 
   return (
-    <div>
-      <div>Transactions Details</div>
+    <AdminLayout>
+      <div className=' flex flex-col gap-8 my-6'>
+        <div className=' flex justify-between items-center'>
+          <div className=' text-xl font-medium'>Transaction Details</div>
+          <div onClick={() => router.push("/admin/orders")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+        </div>
 
-      <OrderDetailView transactionId={id} transaction={data} isLoading={isLoading} isError={isError} />
-
-    </div>
+        <OrderDetailView transactionId={id} transaction={data} isLoading={isLoading} isError={isError} />
+      </div>
+    </AdminLayout>
   )
 }
 

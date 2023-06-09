@@ -76,19 +76,41 @@ export const productRouter = createTRPCRouter({
       image: z.string().nullable()
     }))
     .mutation(async ({ input, ctx }) => {
+
       try {
-        const edit = await ctx.prisma.product.update({
-          where: {
-            id: input.id
-          },
-          data: {
-            name: input.name,
-            small_description: input.small_description,
-            description: input.description,
-            is_active: input.is_active,
-            image: input.image
+        const edit = await ctx.prisma.$transaction(async (tx) => {
+          if (input.image == null) {
+            const update = await tx.product.update({
+              where: {
+                id: input.id
+              },
+              data: {
+                name: input.name,
+                small_description: input.small_description,
+                description: input.description,
+                is_active: input.is_active,
+              }
+            })
+
+            return update
+          } else {
+            const update = await tx.product.update({
+              where: {
+                id: input.id
+              },
+              data: {
+                name: input.name,
+                small_description: input.small_description,
+                description: input.description,
+                is_active: input.is_active,
+                image: input.image
+              }
+            })
+
+            return update
           }
         })
+
       } catch (e) {
         return {
           success: false,

@@ -6,10 +6,11 @@ import { callbackData } from '~/utils/types'
 import { useRouter } from 'next/router'
 import AdminLayout from '~/components/admin/AdminLayout'
 import { HiPhoto } from 'react-icons/hi2'
+import Callbacks from '~/components/common/Callbacks'
 
 const CreateProduct = () => {
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
-  const [imagePayment, setImagePayment] = useState<string | ArrayBuffer | null>();
+  const [imagePayment, setImagePayment] = useState<string | ArrayBuffer | null>(null);
   const router = useRouter();
 
   const insertData = api.admin.product.createProduct.useMutation({
@@ -37,32 +38,33 @@ const CreateProduct = () => {
       small_description: "",
       description: "",
       is_active: false,
-      image: ""
+      image: null
     },
     onSubmit
   })
 
   async function onSubmit(values: productInterface) {
-    insertData.mutate({ ...values, image: imagePayment as string })
+    insertData.mutate({ ...values, image: imagePayment as string | null })
+  }
+
+  const handleClose = () => {
+    setCallback({ visible: false, data: null })
   }
 
   return (
     <AdminLayout>
       {callback.visible && (
-        <div className='popup'>
-          <div>{callback.data?.message}</div>
-          <div>{callback.data?.error ? "Error Occured" : ""}</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700 w-fit' onClick={() => setCallback({ visible: false, data: null })}>Close</div>
-          </div>
-        </div>
+        <Callbacks
+          close={handleClose}
+          data={callback}
+        />
       )}
 
       <div className=' flex flex-col gap-8'>
-        <div className=' flex justify-between items-center'>
-          <div className=' text-xl font-medium'>Input Product</div>
-          <div onClick={() => router.push("/admin/products")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
-        </div>
+          <div className=' flex justify-between items-center'>
+            <div className=' text-xl font-medium'>Input Product</div>
+            <div onClick={() => router.push("/admin/products")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+          </div>
 
         <form className=' flex flex-col gap-6' onSubmit={formik.handleSubmit}>
           <div className='input__wrapper'>
@@ -114,11 +116,11 @@ const CreateProduct = () => {
                 <HiPhoto className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
                 <div className="mt-4 flex text-sm leading-6 text-gray-600">
                   <label
-                    htmlFor="file-upload"
+                    htmlFor="image"
                     className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                   >
                     <span>Upload a file</span>
-                    <input id="file-upload" name="file-upload" type="file" className="sr-only" accept='image/' onChange={convertToBase} />
+                    <input id="image" name="image" type="file" className="sr-only" accept='image/' onChange={convertToBase} />
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
@@ -126,11 +128,6 @@ const CreateProduct = () => {
               </div>
             </div>
           </div>
-
-          {/* <div className=' input__wrapper'>
-            <label>Image</label>
-            <input type="file" accept='image/' onChange={convertToBase} />
-          </div> */}
 
           <div>
             <input className=' base__button bg-lime-500 hover:bg-lime-700 text-white' type="submit" value="Create" />

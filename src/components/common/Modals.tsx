@@ -50,7 +50,7 @@ const Modals = ({ action, close }: Props) => {
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Are you sure you want to delete this product? All of your data will be permanently
+                          Are you sure you want to delete? All of your data will be permanently
                           removed. This action cannot be undone.
                         </p>
                       </div>

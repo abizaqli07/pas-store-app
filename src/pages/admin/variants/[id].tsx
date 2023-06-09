@@ -2,6 +2,8 @@ import { TYPE, Variant } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
 import { NextRouter, useRouter } from 'next/router';
 import { useState } from 'react'
+import AdminLayout from '~/components/admin/AdminLayout';
+import Callbacks from '~/components/common/Callbacks';
 import { variantUpdateInterface } from '~/utils/admin/validateVariant';
 import { api } from '~/utils/api';
 import { callbackData } from '~/utils/types';
@@ -31,60 +33,73 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
     insertData.mutate(values)
   }
 
+  const handleClose = () => {
+    setCallback({ visible: false, data: null })
+  }
+
   return (
     <div>
       {callback.visible && (
-        <div className='popup'>
-          <div>{callback.data?.message}</div>
-          <div>{callback.data?.error ? "Error Occured" : ""}</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700 w-fit' onClick={() => setCallback({ visible: false, data: null })}>Close</div>
-          </div>
-        </div>
+        <Callbacks
+          close={handleClose}
+          data={callback}
+        />
       )}
 
-      <div onClick={() => router.push("/admin/variants")} className=' bg-red-500 cursor-pointer w-fit'>Back</div>
-      <form className=' flex flex-col gap-4' onSubmit={formik.handleSubmit}>
-        <div className='flex flex-col'>
-          <label>Name</label>
-          <input
-            id='name'
-            type="text"
-            placeholder='name'
-            required
-            {...formik.getFieldProps('name')}
-          />
+      <div className='flex flex-col gap-8 my-6'>
+        <div className=' flex justify-between items-center'>
+          <div className=' text-xl font-medium'>Edit Variant</div>
+          <div onClick={() => router.push("/admin/variants")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
         </div>
-        <div className='flex flex-col'>
-          <label>Active Period in MONTH</label>
-          <input
-            id='active_period'
-            type="number"
-            required
-            {...formik.getFieldProps('active_period')}
-          />
-        </div>
-        <div className='flex flex-col'>
-          <label>Type</label>
-          <select required id="type">
-            <option value={TYPE.SHARED} selected={formik.values.type == "SHARED" ? true : false}>Shared</option>
-            <option value={TYPE.DEDICATED} selected={formik.values.type == "DEDICATED" ? true : false}>Dedicated</option>
-          </select>
-        </div>
-        <div className='flex flex-col'>
-          <label>Price</label>
-          <input
-            id='price'
-            type="number"
-            required
-            {...formik.getFieldProps('price')}
-          />
-        </div>
+        <form className=' flex flex-col gap-4' onSubmit={formik.handleSubmit}>
+          <div className='flex flex-col input__wrapper'>
+            <label>Name</label>
+            <input
+              id='name'
+              type="text"
+              placeholder='name'
+              required
+              className=' input__field'
+              {...formik.getFieldProps('name')}
+            />
+          </div>
+          <div className='flex flex-col input__wrapper'>
+            <label>Active Period in MONTH</label>
+            <input
+              id='active_period'
+              type="number"
+              required
+              className=' input__field'
+              {...formik.getFieldProps('active_period')}
+            />
+          </div>
+          <div className='flex flex-col input__wrapper'>
+            <label>Type</label>
+            <select
+              required
+              id="type"
+              className=' input__field'
+            >
+              <option value={TYPE.SHARED} selected={formik.values.type == "SHARED" ? true : false}>Shared</option>
+              <option value={TYPE.DEDICATED} selected={formik.values.type == "DEDICATED" ? true : false}>Dedicated</option>
+            </select>
+          </div>
+          <div className='flex flex-col input__wrapper'>
+            <label>Price</label>
+            <input
+              id='price'
+              type="number"
+              required
+              className=' input__field'
+              {...formik.getFieldProps('price')}
+            />
+          </div>
 
-        <div>
-          <input className=' bg-lime-500 cursor-pointer' type="submit" value="Update" />
-        </div>
-      </form>
+          <div>
+            <input className=' base__button bg-lime-500 hover:bg-lime-700 text-white' type="submit" value="Update" />
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
@@ -108,9 +123,9 @@ const DetailVariant = () => {
   }
 
   return (
-    <div>
+    <AdminLayout>
       <DetailVariantView data={data.data} router={router} />
-    </div>
+    </AdminLayout>
   )
 }
 
