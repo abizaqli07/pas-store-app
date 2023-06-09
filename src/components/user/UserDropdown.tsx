@@ -7,7 +7,7 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const MenuDropDown = () => {
+const UserDropdown = () => {
   const session = useSession();
   
   return (
@@ -32,13 +32,13 @@ const MenuDropDown = () => {
             <Menu.Item>
               {({ active }) => (
                 <a
-                  href="/"
+                  href="/products/transactions/"
                   className={classNames(
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                     'block px-4 py-2 text-sm'
                   )}
                 >
-                  Landing Page
+                  Transaction
                 </a>
               )}
             </Menu.Item>
@@ -75,4 +75,4 @@ const MenuDropDown = () => {
   )
 }
 
-export default MenuDropDown
+export default UserDropdown
