@@ -1,9 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Saira+Extra+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Send+Flowers&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+*>* {
+  font-family: 'Poppins', sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 @layer components {
+  /* ================ Reuse Component =============== */
+  .base__button {
+    @apply cursor-pointer rounded-lg transition-all duration-300 ease-in-out w-fit px-4 py-2 font-semibold;
+  }
+
+  .input__container{
+    @apply bg-primaryHover flex flex-col text-shade gap-4 p-3 rounded-xl text-base font-medium
+  }
+
+  .input__wrapper {
+    @apply flex flex-col gap-2
+  }
+
+  .input__wrapper > label {
+    @apply text-base font-medium
+  }
+
+  .input__field {
+    @apply w-full p-3 border rounded-md;
+    @apply border-none disabled:text-white disabled:font-medium bg-gray-100 focus:ring-2 focus:ring-primary;
+  }
+
+  .checkbox__field {
+    @apply p-3 rounded-md checked:bg-primary text-primary hover:text-primaryHover hover:ring-primaryHover focus:ring-primary
+  }
+
   .popup {
-    @apply p-12 rounded-xl bg-gray-400 flex flex-col gap-4 absolute top-20 left-[50%] -translate-x-[50%]
+    @apply fixed z-30 p-12 rounded-xl bg-gray-400 flex flex-col gap-4 top-20 left-[50%] -translate-x-[50%]
   }
 }

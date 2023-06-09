@@ -1,13 +1,15 @@
 import { Product } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
+import Image from 'next/image';
 import { NextRouter, useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { productUpdateInterface } from '~/utils/admin/validateProduct';
 import { api } from '~/utils/api';
 import { callbackData } from '~/utils/types';
 
-const DetailProductView = ({ data, router } : { data: Product, router: NextRouter}) => {
+const DetailProductView = ({ data, router }: { data: Product, router: NextRouter }) => {
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
+  const [imagePayment, setImagePayment] = useState<string | ArrayBuffer | null>();
 
 
   const insertData = api.admin.product.updateProduct.useMutation({
@@ -16,19 +18,33 @@ const DetailProductView = ({ data, router } : { data: Product, router: NextRoute
     }
   })
 
+  function convertToBase(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    var file = e.target.files;
+
+    var reader = new FileReader();
+    if (file != null && file.length > 0) {
+      reader.readAsDataURL(file[0] as Blob);
+      reader.onload = () => {
+        setImagePayment(reader.result)
+      }
+    }
+  }
+
   const formik: FormikProps<productUpdateInterface> = useFormik<productUpdateInterface>({
     initialValues: {
       id: data.id,
       name: data.name,
       small_description: data.small_description,
       description: data.description,
-      is_active: data.is_active
+      is_active: data.is_active,
+      image: ""
     },
     onSubmit
   })
 
   async function onSubmit(values: productUpdateInterface) {
-    insertData.mutate(values)
+    insertData.mutate({...values, image: imagePayment as string})
   }
 
   return (
@@ -81,6 +97,13 @@ const DetailProductView = ({ data, router } : { data: Product, router: NextRoute
             checked={formik.values.is_active}
           />
         </div>
+        <div>
+          {data.image && (
+            <div><Image src={data.image} alt='image' height={100} width={100}/></div>
+          )}
+          <label>Image</label>
+          <input type="file" accept='image/' onChange={convertToBase} />
+        </div>
 
         <div>
           <input className=' bg-lime-500 cursor-pointer' type="submit" value="Update" />
@@ -110,7 +133,7 @@ const DetailProduct = () => {
 
   return (
     <div>
-      <DetailProductView data={data.data} router={router}/>
+      <DetailProductView data={data.data} router={router} />
     </div>
   )
 }

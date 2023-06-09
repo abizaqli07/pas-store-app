@@ -4,6 +4,8 @@ import { NextRouter, useRouter } from "next/router"
 import AdminLayout from "~/components/admin/AdminLayout"
 import { api } from "~/utils/api";
 import { callbackData } from '~/utils/types';
+import Modals from '~/components/common/Modals';
+import Callbacks from '~/components/common/Callbacks';
 
 const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) => {
   const [confirm, setConfirm] = useState({ visible: false, id: "" })
@@ -12,6 +14,7 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
   const deleteProduct = api.admin.product.deleteProduct.useMutation({
     onSuccess(data) {
       setCallback({ visible: true, data: data })
+      setConfirm({ visible: false, id: "" })
     }
   })
 
@@ -23,37 +26,39 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
     deleteProduct.mutate({ id: confirm.id })
   }
 
+  const handleClose = () => {
+    setConfirm({ visible: false, id: "" })
+    setCallback({ visible: false, data: null })
+  }
+
   return (
     <>
       {callback.visible && (
-        <div className=' popup'>
-          <div>{callback.data?.message}</div>
-          <div>{callback.data?.error ? callback.data.error : ""}</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700 w-fit' onClick={() => router.reload()}>Close</div>
-          </div>
-        </div>
+        <Callbacks
+          close={handleClose}
+          data={callback}
+        />
       )}
 
       {confirm.visible && (
-        <div className=' popup'>
-          <div>Anda ingin menghapus?</div>
-          <div className=' flex gap-3'>
-            <div className='base__button bg-gray-500 hover:bg-gray-700' onClick={() => setConfirm({ visible: false, id: "" })}>Cancel</div>
-            <div className='button__danger' onClick={() => handleDelete()}>Confirm</div>
-          </div>
-        </div>
+        <Modals
+          action={handleDelete}
+          close={handleClose}
+        />
       )}
 
-      <div className=" flex flex-col gap-4">
+      <div className=" flex flex-col gap-6">
         {data.map((product) => (
-          <div key={product.id}>
+          <div 
+            key={product.id}
+            className=' p-6 bg-primaryLight shadow-lg flex flex-col rounded-lg gap-4'
+          >
             <div>Nama : {product.name}</div>
             <div>Description : {product.small_description}</div>
             <div>Status : {product.is_active ? "Active" : "Hidden"}</div>
-            <div className=" flex gap-4">
-              <div className="  bg-lime-500 w-fit cursor-pointer" onClick={() => router.push(`${router.pathname}/${product.id}`)}>View</div>
-              <div className=" bg-red-500 w-fit cursor-pointer" onClick={() => handleConfirm(product.id)}>Delete</div>
+            <div className=" flex gap-4 items-center">
+              <div className="  base__button border-2 border-lime-500 hover:bg-lime-500 hover:text-white" onClick={() => router.push(`${router.pathname}/${product.id}`)}>View</div>
+              <div className=" base__button border-2 border-red-500 hover:bg-red-500 hover:text-white" onClick={() => handleConfirm(product.id)}>Delete</div>
             </div>
           </div>
         ))}
@@ -83,9 +88,9 @@ const Products = () => {
     <AdminLayout>
 
       <div className=' flex flex-col gap-8'>
-        <div className=' w-full bg-slate-500 flex flex-col gap-4 p-6 rounded-xl'>
-          <div>Input New Product :</div>
-          <div className=' bg-lime-200 w-fit cursor-pointer' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
+        <div className=' w-full flex justify-between p-6 rounded-xl items-center'>
+          <div className=' text-3xl'>Products List</div>
+          <div className=' base__button bg-primary hover:bg-primaryHover text-white' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
         </div>
 
         <ProductView data={data?.data} router={router} />

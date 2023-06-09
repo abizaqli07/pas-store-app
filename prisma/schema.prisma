@@ -67,6 +67,7 @@ model Product {
     small_description String
     description       String
     is_active         Boolean
+    image             String?
     createdAt         DateTime  @default(now())
     updatedAt         DateTime  @updatedAt
     Variant           Variant[]
@@ -107,6 +108,7 @@ model Premium {
     id        String   @id @default(cuid())
     email     String
     password  String
+    status    PERIOD   @default(ACTIVE)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -122,5 +124,9 @@ enum TYPE {
 enum STATUS {
     ORDERED
     COMPLETED
+}
+
+enum PERIOD {
+    ACTIVE
     EXPIRED
 }

@@ -1,44 +1,122 @@
-import { signOut } from 'next-auth/react'
-import Link from 'next/link'
-import React, { ReactNode, useState } from 'react'
+import { AnimatePresence, motion } from "framer-motion";
+import { signOut, useSession } from 'next-auth/react';
+import { ReactNode, useState } from 'react';
+import { HiMenuAlt1 } from 'react-icons/hi';
+import { RxCrossCircled } from 'react-icons/rx';
+import { Menu, Transition } from '@headlessui/react'
+import MenuDropDown from "./MenuDropDown";
 
 type Props = {
   children: ReactNode
 }
 
-const AdminLayout = ({ children }: Props) => {
-  const [sidebar, setSidebar] = useState(false)
+const links = [
+  { name: "Home", to: "/admin", id: 1 },
+  { name: "Product", to: "/admin/products", id: 2 },
+  { name: "Variant", to: "/admin/variants", id: 3 },
+  { name: "Order", to: "/admin/orders", id: 4 },
+  { name: "Transaction", to: "/admin/transactions", id: 4 }
+];
 
+const itemVariants = {
+  closed: {
+    x: 400,
+    opacity: 0
+  },
+  open: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: .5,
+      type: "tween",
+      ease: "easeInOut",
+    }
+  }
+};
+
+const sideVariants = {
+  closed: {
+    transition: {
+      staggerChildren: 0.2,
+      staggerDirection: -1
+    }
+  },
+  open: {
+    transition: {
+      staggerChildren: 0.2,
+      staggerDirection: 1
+    }
+  }
+};
+
+const AdminLayout = ({ children }: Props) => {
+  const [open, setOpen] = useState(false)
+
+  const btnMenu = " cursor-pointer inline-flex items-center p-2 text-sm text-primaryDark rounded-lg hover:bg-gray-100 hover:text-primary"
   return (
     <div className=" w-full h-fit">
       {/* Navigation Bar */}
-      <div className=" fixed top-0 z-10 w-full py-8 bg-gray-300">
-        <div className=" container mx-auto flex justify-between">
-          <div className=' cursor-pointer' onClick={() => setSidebar(true)}>=</div>
+
+      <div className=" fixed top-0 z-10 w-full py-4 bg-white shadow-md">
+        <div className=" container mx-auto flex justify-between items-center px-2 sm:px-0">
+          <div
+            className={btnMenu}
+            onClick={() => setOpen(true)}
+          ><HiMenuAlt1 className=' text-3xl' /></div>
           <div>Admin Dashboard</div>
           <div>
-            <div className=" flex gap-2">
-              <div><button className=" bg-lime-500" onClick={() => void signOut()}>Log Out</button></div>
-              <div className=" px-4 py-2 bg-red-500"></div>
-            </div>
+            <MenuDropDown />
           </div>
         </div>
       </div>
 
       {/* Admin Sidebar */}
-      <div className={` w-full min-h-screen absolute z-20 bg-lime-100 flex justify-center items-center top-0 ${sidebar ? "" : "-left-[100%]"}`}>
-        <div onClick={() => setSidebar(false)} className=' absolute top-4 right-4 cursor-pointer'>X</div>
-        <div className=' w-full h-full flex flex-col gap-5 items-center'>
-          <Link href={"/admin"}>Home</Link>
-          <Link href={"/admin/products"}>Product</Link>
-          <Link href={"/admin/variants"}>Variants</Link>
-          <Link href={"/admin/orders"}>Orders</Link>
-          <Link href={"/admin/transactions"}>Transaction</Link>
-        </div>
-      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className=" w-full min-h-screen fixed z-20 bg-white flex justify-center items-center top-0"
+            initial={{
+              x: '-100vh'
+            }}
+            animate={{
+              x: 0
+            }}
+            exit={{
+              x: '-100vh',
+              transition: { delay: 0.7, duration: 0.3 }
+            }}
+          >
+            <button
+              onClick={() => setOpen(false)}
+              className={`${btnMenu} absolute top-8 right-8`}
+            ><RxCrossCircled className=' text-3xl' /></button>
+            <motion.div
+              className=' w-full h-full flex flex-col gap-5 items-center'
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={sideVariants}
+            >
+              {links.map(({ id, name, to }) => (
+
+                <motion.a
+                  variants={itemVariants}
+                  key={id}
+                  href={to}
+                  whileHover={{
+                    scale: 1.1
+                  }}
+                  className=' text-lg hover:text-primary cursor-pointer'
+                >{name}</motion.a>
+
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Childs Component */}
-      <div className=' mt-24'>
+      <div className=' mt-24 container mx-auto'>
         {children}
       </div>
     </div>

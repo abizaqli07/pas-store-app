@@ -39,6 +39,7 @@ export const productRouter = createTRPCRouter({
       small_description: z.string(),
       description: z.string(),
       is_active: z.boolean(),
+      image: z.string().nullable()
     }))
     .mutation(async ({ ctx, input }) => {
       try {
@@ -47,7 +48,8 @@ export const productRouter = createTRPCRouter({
             name: input.name,
             small_description: input.small_description,
             description: input.description,
-            is_active: input.is_active
+            is_active: input.is_active,
+            image: input.image,
           }
         })
       } catch (error) {
@@ -71,6 +73,7 @@ export const productRouter = createTRPCRouter({
       small_description: z.string(),
       description: z.string(),
       is_active: z.boolean(),
+      image: z.string().nullable()
     }))
     .mutation(async ({ input, ctx }) => {
       try {
@@ -82,7 +85,8 @@ export const productRouter = createTRPCRouter({
             name: input.name,
             small_description: input.small_description,
             description: input.description,
-            is_active: input.is_active
+            is_active: input.is_active,
+            image: input.image
           }
         })
       } catch (e) {
