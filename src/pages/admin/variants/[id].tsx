@@ -1,5 +1,6 @@
 import { TYPE, Variant } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
+import Link from 'next/link';
 import { NextRouter, useRouter } from 'next/router';
 import { useState } from 'react'
 import AdminLayout from '~/components/admin/AdminLayout';
@@ -24,12 +25,12 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
       name: data.name,
       active_period: data.active_period,
       type: TYPE.SHARED,
-      price: Number(data.price) as any,
+      price: BigInt(data.price),
     },
     onSubmit
   })
 
-  async function onSubmit(values: variantUpdateInterface) {
+  function onSubmit(values: variantUpdateInterface) {
     insertData.mutate(values)
   }
 
@@ -49,7 +50,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
       <div className='flex flex-col gap-8 my-6'>
         <div className=' flex justify-between items-center'>
           <div className=' text-xl font-medium'>Edit Variant</div>
-          <div onClick={() => router.push("/admin/variants")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+          <Link href='/admin/variants' className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</Link>
         </div>
         <form className=' flex flex-col gap-4' onSubmit={formik.handleSubmit}>
           <div className='flex flex-col input__wrapper'>
@@ -106,7 +107,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
 
 const DetailVariant = () => {
   const router = useRouter();
-  let { id } = router.query
+  const { id } = router.query
 
   const { data, isError, isLoading } = api.admin.variant.getVariant.useQuery({ id: id as string })
 

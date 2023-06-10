@@ -41,7 +41,7 @@ const OrderView = ({ transaction, isLoading, isError }: transactionProps) => {
           <div>
             <div
               className=' base__button border-2 border-lime-500 hover:bg-lime-500 hover:text-white'
-              onClick={() => router.push(`${router.pathname}/${data.id}`)}
+              onClick={() => void router.push(`${router.pathname}/${data.id}`)}
             >View Details</div>
           </div>
         </div>

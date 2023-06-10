@@ -43,11 +43,11 @@ const ProductView = ({ products, isLoading, isError }: ProductViewProps) => {
           </div>
           <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
             <div className="flex items-center justify-center">
-              <button
-                onClick={() => router.push(`/products/${data.id}`)}
+              <Link
+                href={`/products/${data.id}`}
                 className="mx-auto bg-amber-500 lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                 Detail & Pembelian
-              </button>
+              </Link>
             </div>
           </div>
         </div>

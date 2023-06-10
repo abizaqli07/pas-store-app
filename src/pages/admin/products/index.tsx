@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { callbackData } from '~/utils/types';
 import Modals from '~/components/common/Modals';
 import Callbacks from '~/components/common/Callbacks';
+import Link from 'next/link';
 
 const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) => {
   const [confirm, setConfirm] = useState({ visible: false, id: "" })
@@ -22,7 +23,7 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
     setConfirm({ visible: true, id: id });
   }
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     deleteProduct.mutate({ id: confirm.id })
   }
 
@@ -49,7 +50,7 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
 
       <div className=" flex flex-col gap-6">
         {data.map((product) => (
-          <div 
+          <div
             key={product.id}
             className=' p-6 bg-primaryLight shadow-lg flex flex-col rounded-lg gap-4'
           >
@@ -57,7 +58,7 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
             <div>Description : {product.small_description}</div>
             <div>Status : {product.is_active ? "Active" : "Hidden"}</div>
             <div className=" flex gap-4 items-center">
-              <div className="  base__button border-2 border-lime-500 hover:bg-lime-500 hover:text-white" onClick={() => router.push(`${router.pathname}/${product.id}`)}>View</div>
+              <Link href={`${router.pathname}/${product.id}`} className="  base__button border-2 border-lime-500 hover:bg-lime-500 hover:text-white">View</Link>
               <div className=" base__button border-2 border-red-500 hover:bg-red-500 hover:text-white" onClick={() => handleConfirm(product.id)}>Delete</div>
             </div>
           </div>
@@ -90,7 +91,7 @@ const Products = () => {
       <div className=' flex flex-col gap-8'>
         <div className=' w-full flex justify-between p-6 rounded-xl items-center'>
           <div className=' text-3xl'>Products List</div>
-          <div className=' base__button bg-primary hover:bg-primaryHover text-white' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
+          <Link href={`${router.pathname}/create`} className=' base__button bg-primary hover:bg-primaryHover text-white'>Input</Link>
         </div>
 
         <ProductView data={data?.data} router={router} />

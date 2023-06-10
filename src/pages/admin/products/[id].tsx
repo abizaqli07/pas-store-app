@@ -1,6 +1,7 @@
 import { Product } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
 import Image from 'next/image';
+import Link from 'next/link';
 import { NextRouter, useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { HiPhoto } from 'react-icons/hi2';
@@ -23,9 +24,9 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
 
   function convertToBase(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    var file = e.target.files;
+    const file = e.target.files;
 
-    var reader = new FileReader();
+    const reader = new FileReader();
     if (file != null && file.length > 0) {
       reader.readAsDataURL(file[0] as Blob);
       reader.onload = () => {
@@ -46,7 +47,7 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
     onSubmit
   })
 
-  async function onSubmit(values: productUpdateInterface) {
+  function onSubmit(values: productUpdateInterface) {
     insertData.mutate({ ...values, image: imagePayment as string })
   }
 
@@ -66,7 +67,7 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
       <div className='flex flex-col gap-8 my-6'>
         <div className=' flex justify-between items-center'>
           <div className=' text-xl font-medium'>Edit Product</div>
-          <div onClick={() => router.push("/admin/products")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+          <Link href='/admin/products' className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</Link>
         </div>
 
         <form className=' flex flex-col gap-4' onSubmit={formik.handleSubmit}>
@@ -149,7 +150,7 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
 
 const DetailProduct = () => {
   const router = useRouter();
-  let { id } = router.query
+  const { id } = router.query
 
   const { data, isError, isLoading } = api.admin.product.getProduct.useQuery({ id: id as string })
 

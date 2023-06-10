@@ -1,5 +1,6 @@
 import { Product, TYPE } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import AdminLayout from '~/components/admin/AdminLayout';
@@ -29,7 +30,7 @@ const CreateVariantView = ({ product }: { product: Product[] }) => {
     onSubmit
   })
 
-  async function onSubmit(values: variantInterface) {
+  function onSubmit(values: variantInterface) {
     insertData.mutate(values)
   }
 
@@ -49,7 +50,7 @@ const CreateVariantView = ({ product }: { product: Product[] }) => {
       <div className=' flex flex-col gap-8'>
         <div className=' flex justify-between items-center'>
           <div className=' text-xl font-medium'>Input Variant</div>
-          <div onClick={() => router.push("/admin/variants")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+          <Link href='/admin/variants' className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</Link>
         </div>
 
         <form className=' flex flex-col gap-4' onSubmit={formik.handleSubmit}>

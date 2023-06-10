@@ -43,7 +43,7 @@ export const variantRouter = createTRPCRouter({
       name: z.string(),
       active_period: z.number(),
       type: z.nativeEnum(TYPE),
-      price: z.any()
+      price: z.bigint()
     }))
     .mutation(async ({ ctx, input }) => {
       try {
@@ -76,7 +76,7 @@ export const variantRouter = createTRPCRouter({
       name: z.string(),
       active_period: z.number(),
       type: z.nativeEnum(TYPE),
-      price: z.any()
+      price: z.bigint()
     }))
     .mutation(async ({ input, ctx }) => {
       try {

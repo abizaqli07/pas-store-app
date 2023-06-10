@@ -1,6 +1,7 @@
 import { Order, Premium, Product, Variant } from '@prisma/client';
 import { FormikProps, useFormik } from 'formik';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { BsCheckCircle, BsExclamationTriangle } from 'react-icons/bs';
@@ -39,7 +40,7 @@ const OrderDetailView = ({ transactionId, transaction, isLoading, isError }: tra
     onSubmit
   })
 
-  async function onSubmit(values: userAccountInterface) {
+  function onSubmit(values: userAccountInterface) {
     insertData.mutate(values)
   }
 
@@ -147,7 +148,7 @@ const OrderDetails = () => {
       <div className=' flex flex-col gap-8 my-6'>
         <div className=' flex justify-between items-center'>
           <div className=' text-xl font-medium'>Transaction Details</div>
-          <div onClick={() => router.push("/admin/orders")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+          <Link href='/admin/orders' className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</Link>
         </div>
 
         <OrderDetailView transactionId={id} transaction={data} isLoading={isLoading} isError={isError} />

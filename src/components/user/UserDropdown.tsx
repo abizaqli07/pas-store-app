@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
@@ -9,7 +10,7 @@ function classNames(...classes: any[]) {
 
 const UserDropdown = () => {
   const session = useSession();
-  
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -31,7 +32,7 @@ const UserDropdown = () => {
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <a
+                <Link
                   href="/products/transactions/"
                   className={classNames(
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -39,12 +40,12 @@ const UserDropdown = () => {
                   )}
                 >
                   Transaction
-                </a>
+                </Link>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <a
+                <Link
                   href="#"
                   className={classNames(
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -52,7 +53,7 @@ const UserDropdown = () => {
                   )}
                 >
                   Support
-                </a>
+                </Link>
               )}
             </Menu.Item>
             <Menu.Item>
@@ -62,7 +63,7 @@ const UserDropdown = () => {
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                     'block px-4 py-2 text-sm'
                   )}
-                  onClick={() => signOut()}
+                  onClick={() => void signOut()}
                 >
                   Log Out
                 </button>

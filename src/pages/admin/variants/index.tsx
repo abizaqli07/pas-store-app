@@ -1,4 +1,5 @@
 import { Product, Variant } from "@prisma/client";
+import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { useState } from 'react';
 import AdminLayout from "~/components/admin/AdminLayout";
@@ -21,7 +22,7 @@ const VariantView = ({ data, router }: { data: (Product & { Variant: Variant[] }
     setConfirm({ visible: true, id: id });
   }
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     deleteProduct.mutate({ id: confirm.id })
   }
 
@@ -63,7 +64,7 @@ const VariantView = ({ data, router }: { data: (Product & { Variant: Variant[] }
                   <div>Type : {variant.type}</div>
                   <div>Active Period : {variant.active_period} Month</div>
                   <div className=" flex gap-4">
-                    <div className="  base__button  border-2 border-lime-500 hover:bg-lime-500 hover:text-white" onClick={() => router.push(`${router.pathname}/${variant.id}`)}>View</div>
+                    <Link href={`${router.pathname}/${variant.id}`} className="  base__button  border-2 border-lime-500 hover:bg-lime-500 hover:text-white">View</Link>
                     <div className=" base__button border-2 border-red-500 hover:bg-red-500 hover:text-white" onClick={() => handleConfirm(variant.id)}>Delete</div>
                   </div>
                 </div>
@@ -99,7 +100,7 @@ const Variants = () => {
       <div className=' flex flex-col gap-8'>
         <div className=' w-full flex justify-between p-6 rounded-xl items-center'>
           <div className=' text-3xl'>Variant List</div>
-          <div className=' base__button bg-primary hover:bg-primaryHover text-white' onClick={() => router.push(`${router.pathname}/create`)}>Input</div>
+          <Link href={`${router.pathname}/create`} className=' base__button bg-primary hover:bg-primaryHover text-white'>Input</Link>
         </div>
 
         <VariantView data={data?.data} router={router} />

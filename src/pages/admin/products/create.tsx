@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import AdminLayout from '~/components/admin/AdminLayout'
 import { HiPhoto } from 'react-icons/hi2'
 import Callbacks from '~/components/common/Callbacks'
+import Link from 'next/link'
 
 const CreateProduct = () => {
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
@@ -21,9 +22,9 @@ const CreateProduct = () => {
 
   function convertToBase(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    var file = e.target.files;
+    const file = e.target.files;
 
-    var reader = new FileReader();
+    const reader = new FileReader();
     if (file != null && file.length > 0) {
       reader.readAsDataURL(file[0] as Blob);
       reader.onload = () => {
@@ -43,7 +44,7 @@ const CreateProduct = () => {
     onSubmit
   })
 
-  async function onSubmit(values: productInterface) {
+  function onSubmit(values: productInterface) {
     insertData.mutate({ ...values, image: imagePayment as string | null })
   }
 
@@ -63,7 +64,7 @@ const CreateProduct = () => {
       <div className=' flex flex-col gap-8'>
           <div className=' flex justify-between items-center'>
             <div className=' text-xl font-medium'>Input Product</div>
-            <div onClick={() => router.push("/admin/products")} className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</div>
+            <Link href='/admin/products' className=' base__button bg-red-500 hover:bg-red-800 text-white'>Back</Link>
           </div>
 
         <form className=' flex flex-col gap-6' onSubmit={formik.handleSubmit}>

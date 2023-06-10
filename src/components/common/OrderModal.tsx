@@ -7,7 +7,7 @@ type Props = {
   close: () => void,
 }
 
-const Modals = ({ action, close }: Props) => {
+const OrderModal = ({ action, close }: Props) => {
   const [open, setOpen] = useState(true)
   const cancelButtonRef = useRef(null)
 
@@ -40,17 +40,16 @@ const Modals = ({ action, close }: Props) => {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <BsExclamationTriangle className="h-6 w-6 text-red-600" aria-hidden="true" />
+                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-lime-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <BsExclamationTriangle className="h-6 w-6 text-lime-500" aria-hidden="true" />
                     </div>
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Delete
+                        Confirm Your Order
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Are you sure you want to delete? All of your data will be permanently
-                          removed. This action cannot be undone.
+                          Are you sure you want to order? All of your data will be sended to admin. You can undone this later.
                         </p>
                       </div>
                     </div>
@@ -59,10 +58,10 @@ const Modals = ({ action, close }: Props) => {
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-lime-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 sm:ml-3 sm:w-auto"
                     onClick={() => void action()}
                   >
-                    Delete
+                    Order
                   </button>
                   <button
                     type="button"
@@ -82,4 +81,4 @@ const Modals = ({ action, close }: Props) => {
   )
 }
 
-export default Modals
+export default OrderModal

@@ -5,7 +5,7 @@ export interface variantInterface {
   name: string
   active_period: number
   type: TYPE
-  price: BigInt
+  price: bigint
 }
 
 export interface variantUpdateInterface {
@@ -13,5 +13,5 @@ export interface variantUpdateInterface {
   name: string
   active_period: number
   type: TYPE
-  price: BigInt
+  price: bigint
 }
