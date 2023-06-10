@@ -31,7 +31,7 @@ const CreateVariantView = ({ product }: { product: Product[] }) => {
   })
 
   function onSubmit(values: variantInterface) {
-    insertData.mutate(values)
+    insertData.mutate({ ...values, price: BigInt(values.price) })
   }
 
   const handleClose = () => {

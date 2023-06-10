@@ -31,7 +31,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
   })
 
   function onSubmit(values: variantUpdateInterface) {
-    insertData.mutate(values)
+    insertData.mutate({ ...values, price: BigInt(values.price) })
   }
 
   const handleClose = () => {
