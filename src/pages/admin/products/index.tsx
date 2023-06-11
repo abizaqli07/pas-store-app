@@ -12,10 +12,15 @@ const ProductView = ({ data, router }: { data: Product[], router: NextRouter }) 
   const [confirm, setConfirm] = useState({ visible: false, id: "" })
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
 
+  const trpcUtils = api.useContext();
+
   const deleteProduct = api.admin.product.deleteProduct.useMutation({
-    onSuccess(data) {
-      setCallback({ visible: true, data: data })
-      setConfirm({ visible: false, id: "" })
+    onSuccess: async (data) => {
+      setCallback({ visible: true, data: data });
+      setConfirm({ visible: false, id: "" });
+      
+
+      await trpcUtils.admin.product.getAllProduct.invalidate()
     }
   })
 

@@ -5,6 +5,10 @@ import { HiMenuAlt1 } from 'react-icons/hi';
 import { RxCrossCircled } from 'react-icons/rx';
 import { Menu, Transition } from '@headlessui/react'
 import MenuDropDown from "./MenuDropDown";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next";
+import { authOptions, getServerAuthSession } from "~/server/auth";
+import { getServerSession } from "next-auth";
 
 type Props = {
   children: ReactNode
@@ -51,6 +55,14 @@ const sideVariants = {
 
 const AdminLayout = ({ children }: Props) => {
   const [open, setOpen] = useState(false)
+  const session = useSession();
+  const router = useRouter();
+
+  if(session.status === 'unauthenticated'){
+    return (
+      <div>Unauthenticated user</div>
+    )
+  }
 
   const btnMenu = " cursor-pointer inline-flex items-center p-2 text-sm text-primaryDark rounded-lg hover:bg-gray-100 hover:text-primary"
   return (

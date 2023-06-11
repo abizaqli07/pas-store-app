@@ -1,5 +1,7 @@
 import { Product, Variant } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Callbacks from '~/components/common/Callbacks';
@@ -22,11 +24,16 @@ const UserDetailProductView = ({ productId, product, isLoading, isError }: Detai
   const [confirm, setConfirm] = useState({ visible: false })
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
 
-  const router = useRouter()
+  const session = useSession();
+  const router = useRouter();
 
   const orderProduct = api.user.transaction.orderProduct.useMutation({
-    onSuccess(data) {
-      setCallback({ visible: true, data: data })
+    onSuccess: async (data) => {
+      if (data.success) {
+        await router.push(`/products/transactions/${data.error as string}`)
+      } else {
+        setCallback({ visible: true, data: data })
+      }
     }
   })
 
@@ -124,11 +131,17 @@ const UserDetailProductView = ({ productId, product, isLoading, isError }: Detai
             </div>
 
             <div className="pt-4 flex justify-center pb-7">
-              <button
-                className="px-32 bg-amber-400 py-3 hover:bg-amber-500 rounded-xl text-xl disabled:bg-gray-300"
-                onClick={() => handleConfirm()}
-                disabled={product.Variant.length == 0 ? true : false}
-              >Order</button>
+              {session.status === 'unauthenticated' ? (
+                <div className=' px-4 py-2 bg-gray-200 rounded-lg'>
+                  You have to login before ordering account
+                </div>
+              ) : (
+                <button
+                  className="px-32 bg-amber-400 py-3 hover:bg-amber-500 rounded-xl text-xl disabled:bg-gray-300"
+                  onClick={() => handleConfirm()}
+                  disabled={product.Variant.length == 0 ? true : false}
+                >Order</button>
+              )}
             </div>
 
             <div className="bg-slate-300 rounded-3xl p-7 me-4">
@@ -156,8 +169,12 @@ const UserDetailProduct = () => {
   }
 
   return (
-    <div>
-      <div></div>
+    <div className=' container mx-auto py-12'>
+      <div className=' w-full flex justify-between items-center'>
+        <div className=' text-3xl font-semibold'>Order Account</div>
+        <Link href='/' className=' base__button bg-red-500 hover:bg-red-700 text-white'>Back</Link>
+      </div>
+
       <div>
         <UserDetailProductView productId={id} product={data.data} isLoading={isLoading} isError={isError} />
       </div>
@@ -197,6 +214,7 @@ const UserDetailProduct = () => {
           </div>
         </div>
       </footer>
+
       <div className="bg-amber-500 w-full">
         <div className="text-gray-50 p-4 flex justify-center">
           © 2023 Copyright:

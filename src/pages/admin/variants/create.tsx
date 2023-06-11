@@ -36,6 +36,7 @@ const CreateVariantView = ({ product }: { product: Product[] }) => {
 
   const handleClose = () => {
     setCallback({ visible: false, data: null })
+    router.push('/admin/variants').catch((e) => console.log(e))
   }
 
   return (
@@ -97,6 +98,7 @@ const CreateVariantView = ({ product }: { product: Product[] }) => {
               required
               id="type"
               className=' input__field'
+              {...formik.getFieldProps('type')}
             >
               <option selected disabled value="no-value">-- Choose Type --</option>
               <option value={TYPE.SHARED}>Shared</option>

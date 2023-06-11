@@ -12,9 +12,13 @@ const VariantView = ({ data, router }: { data: (Product & { Variant: Variant[] }
   const [confirm, setConfirm] = useState({ visible: false, id: "" })
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
 
+  const trpcUtils = api.useContext();
+
   const deleteProduct = api.admin.variant.deleteVariant.useMutation({
-    onSuccess(data) {
+    onSuccess: async (data) => {
       setCallback({ visible: true, data: data })
+
+      await trpcUtils.admin.variant.getAllVariant.invalidate()
     }
   })
 

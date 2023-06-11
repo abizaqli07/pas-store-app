@@ -23,18 +23,18 @@ export const transactionRouter = createTRPCRouter({
           }
         })
 
+        return {
+          success: true,
+          message: "Product successfully ordered",
+          error: order.id,
+        }
+
       } catch (error) {
         return {
           success: false,
           message: "Failed ordering product, some error occured",
           error: error,
         }
-      }
-
-      return {
-        success: true,
-        message: "Product successfully ordered",
-        error: null,
       }
 
     }),
@@ -82,7 +82,7 @@ export const transactionRouter = createTRPCRouter({
       transactionId: z.string().cuid(),
       image: z.string()
     }))
-    .mutation(async ({ctx, input}) => {
+    .mutation(async ({ ctx, input }) => {
       try {
         const order = await ctx.prisma.order.update({
           where: {
@@ -105,6 +105,31 @@ export const transactionRouter = createTRPCRouter({
         success: true,
         message: "Proof of payment successfully uploaded",
         error: null,
+      }
+    }),
+  cancelOrder: protectedProcedure
+    .input(z.object({
+      transactionId: z.string().cuid()
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const del = await ctx.prisma.order.delete({
+          where: {
+            id: input.transactionId
+          }
+        })
+      } catch (e) {
+        return {
+          success: false,
+          message: "Failed deleting order, Some error occured",
+          error: e
+        }
+      }
+
+      return {
+        success: true,
+        message: "Order succesfully deleted",
+        error: null
       }
     })
 });

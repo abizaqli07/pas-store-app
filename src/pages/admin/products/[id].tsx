@@ -15,10 +15,13 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
   const [imagePayment, setImagePayment] = useState<string | ArrayBuffer | null>(null);
 
+  const trpcUtils = api.useContext();
 
   const insertData = api.admin.product.updateProduct.useMutation({
-    onSuccess(data) {
+    onSuccess: async (data) => {
       setCallback({ visible: true, data: data })
+
+      await trpcUtils.admin.product.getProduct.invalidate()
     }
   })
 
@@ -53,6 +56,7 @@ const DetailProductView = ({ data, router }: { data: Product, router: NextRouter
 
   const handleClose = () => {
     setCallback({ visible: false, data: null })
+    router.push('/admin/products').catch((e) => console.log(e))
   }
 
   return (

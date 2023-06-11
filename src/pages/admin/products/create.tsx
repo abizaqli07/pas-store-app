@@ -50,6 +50,7 @@ const CreateProduct = () => {
 
   const handleClose = () => {
     setCallback({ visible: false, data: null })
+    router.push('/admin/products').catch((e) => console.log(e))
   }
 
   return (

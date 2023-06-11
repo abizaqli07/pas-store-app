@@ -9,7 +9,6 @@ import {
 export const orderRouter = createTRPCRouter({
   getAllOrder: protectedProcedure
     .query(async ({ ctx }) => {
-      const userId = ctx.session.user.id;
 
       const data = await ctx.prisma.order.findMany({
         include: {
@@ -17,7 +16,6 @@ export const orderRouter = createTRPCRouter({
           variant: true,
         },
         where: {
-          userId: userId,
           status: "ORDERED"
         },
         orderBy: {
@@ -84,6 +82,24 @@ export const orderRouter = createTRPCRouter({
         message: "Account successfully sended",
         error: null,
       }
+    }),
+  getHistoryTransaction: protectedProcedure
+    .query(async ({ ctx }) => {
+      const data = await ctx.prisma.order.findMany({
+        include: {
+          product: true,
+          variant: true,
+          premium: true
+        },
+        where: {
+          status: "COMPLETED"
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      })
+
+      return data
     })
 
 });

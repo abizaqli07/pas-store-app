@@ -12,10 +12,13 @@ import { callbackData } from '~/utils/types';
 const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter }) => {
   const [callback, setCallback] = useState<callbackData>({ visible: false, data: null })
 
+  const trpcUtils = api.useContext();
 
   const insertData = api.admin.variant.updateVariant.useMutation({
-    onSuccess(data) {
+    onSuccess: async (data) => {
       setCallback({ visible: true, data: data })
+
+      await trpcUtils.admin.variant.getVariant.invalidate()
     }
   })
 
@@ -24,8 +27,8 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
       id: data.id,
       name: data.name,
       active_period: data.active_period,
-      type: TYPE.SHARED,
-      price: BigInt(data.price),
+      type: data.type,
+      price: data.price,
     },
     onSubmit
   })
@@ -36,6 +39,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
 
   const handleClose = () => {
     setCallback({ visible: false, data: null })
+    router.push('/admin/variants').catch((e) => console.log(e))
   }
 
   return (
@@ -80,6 +84,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
               required
               id="type"
               className=' input__field'
+              {...formik.getFieldProps('type')}
             >
               <option value={TYPE.SHARED} selected={formik.values.type == "SHARED" ? true : false}>Shared</option>
               <option value={TYPE.DEDICATED} selected={formik.values.type == "DEDICATED" ? true : false}>Dedicated</option>
@@ -93,6 +98,7 @@ const DetailVariantView = ({ data, router }: { data: Variant, router: NextRouter
               required
               className=' input__field'
               {...formik.getFieldProps('price')}
+              value={Number(formik.values.price)}
             />
           </div>
 

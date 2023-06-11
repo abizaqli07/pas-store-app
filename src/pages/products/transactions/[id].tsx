@@ -10,6 +10,7 @@ import { api } from '~/utils/api';
 import { callbackData } from '~/utils/types';
 import Image from 'next/image';
 import Callbacks from '~/components/common/Callbacks';
+import Link from 'next/link';
 
 interface transactionProps {
   transactionId: string | string[] | undefined;
@@ -264,7 +265,10 @@ const TransactionDetails = () => {
   return (
     <UserLayout>
       <div className=' mt-24 container mx-auto flex flex-col gap-8 pb-12'>
-        <div className=' text-2xl font-semibold'>Transactions Details</div>
+        <div className=' w-full flex justify-between items-center'>
+          <div className=' text-2xl font-semibold'>Transactions Details</div>
+          <Link href='/products/transactions' className=' base__button bg-red-500 hover:bg-red-700 text-white'>Back</Link>
+        </div>
 
         <UserTransactionDetailView transactionId={id} transaction={data} isLoading={isLoading} isError={isError} />
       </div>
