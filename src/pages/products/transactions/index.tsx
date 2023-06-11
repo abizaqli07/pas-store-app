@@ -54,7 +54,7 @@ const UserTransactionView = ({ transaction, isLoading, isError }: transactionPro
 
 
   return (
-    <div className=' flex flex-col gap-8'>
+    <div className=' flex flex-wrap gap-8 justify-center items-center'>
       {callback.visible && (
         <Callbacks
           close={handleClose}
@@ -70,7 +70,7 @@ const UserTransactionView = ({ transaction, isLoading, isError }: transactionPro
       )}
 
       {transaction.map((data) => (
-        <div key={data.id} className=' p-6 bg-primaryLight shadow-lg flex flex-col rounded-lg gap-4'>
+        <div key={data.id} className=' p-6 bg-primaryLight shadow-lg flex flex-col rounded-lg gap-4 max-w-xl'>
           <div>
             <div>Product Name : {data.product.name}</div>
             <div>Product Variant : {data.variant.name}</div>
@@ -118,7 +118,7 @@ const Transaction = () => {
     <UserLayout>
       <div className=' mt-24 container mx-auto flex flex-col gap-8'>
 
-        <div className=' w-full flex justify-between items-center'>
+        <div className=' w-full flex justify-between items-center mb-24'>
           <div className=' text-2xl font-semibold'>User Transactions List</div>
           <Link href='/' className=' base__button bg-red-500 hover:bg-red-700 text-white'>Back</Link>
         </div>

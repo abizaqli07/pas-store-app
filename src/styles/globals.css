@@ -43,4 +43,32 @@ a {
   .popup {
     @apply fixed z-30 p-12 rounded-xl bg-gray-400 flex flex-col gap-4 top-20 left-[50%] -translate-x-[50%]
   }
+
+  /* Sliders Styles */
+  .next,
+  .prev {
+    top: calc(50% - 20px);
+    position: absolute;
+    background: white;
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 2;
+  }
+
+  .next {
+    right: 20px;
+  }
+
+  .prev {
+    left: 20px;
+    transform: scale(-1);
+  }
 }
