@@ -40,7 +40,7 @@ const UserLayout = ({ children }: Props) => {
           <Link href="/">
             <Image
               className="bg-zinc-50 px-2 py-1 rounded-sm"
-              src="/images/logo-removebg-preview.png"
+              src="/images/logo.png"
               alt=""
               height={90}
               width={90}
@@ -48,7 +48,7 @@ const UserLayout = ({ children }: Props) => {
           </Link>
           <div>
             {session.data == null ? (
-              <button onClick={() => void signIn()}>Login</button>
+              <button onClick={() => void signIn()} className=" base__button bg-primary hover:bg-primaryHover text-white">Login</button>
             ) : (
               <UserDropdown />
             )}

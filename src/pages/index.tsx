@@ -112,7 +112,7 @@ const Home: NextPage = () => {
           <div className=" w-screen h-[50vh] md:w-[50vw] md:h-screen bg-black flex justify-center items-center md:items-end md:pb-24 md:pl-8">
             <div className=" text-white text-center flex flex-col gap-12 p-8 md:text-left md:gap-8 lg:gap-6">
               <div className=" text-5xl font-medium md:text-4xl lg:text-7xl">Find Your Absolute <span className=" text-primary font-bold">JOY</span></div>
-              <div className=" font-light pt-4 border-t-[1px] border-primary w-fit">Find all your desires and imagination with just a few clicks,<br /> Various premium fun to fill your day</div>
+              <div className=" font-light pt-4 border-t-[1px] border-primary w-fit">Find all your desires and imagination with just a few clicks<br /> Various premium fun to fill your day</div>
             </div>
           </div>
           <div className=" w-screen h-[50vh] md:w-[50vw] md:h-screen relative">
